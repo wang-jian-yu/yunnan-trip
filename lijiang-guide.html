@@ -231,6 +231,15 @@
       flex-direction: column;
       gap: 10px;
       position: relative;
+      overflow: hidden;
+    }
+
+    .spot-cover {
+      width: calc(100% + 36px);
+      margin: -18px -18px 4px -18px;
+      height: 150px;
+      object-fit: cover;
+      border-bottom: 1px solid var(--border);
     }
 
     .spot-card-header {
@@ -565,6 +574,7 @@
       {
         "tag": "古镇悠闲",
         "name": "白沙古镇",
+        "img": "assets/lijiang_hd/baisha_oldtown.jpg",
         "items": [
           "放好行李到处玩玩，节奏慢、抬头能看雪山",
           "适合找一家咖啡馆发呆拍照"
@@ -573,6 +583,7 @@
       {
         "tag": "古镇漫步",
         "name": "束河古镇",
+        "img": "assets/lijiang_hd/shuhe_oldtown.jpg",
         "items": [
           "比丽江古城更安静，适合下午散步逛小店",
           "青龙桥、四方听音广场可顺路打卡"
@@ -581,6 +592,7 @@
       {
         "tag": "夜游美食",
         "name": "丽江古城（大研古城）",
+        "img": "assets/lijiang_hd/lijiang_night.jpg",
         "items": [
           "忠义市场附近逛吃，买水果/小吃很方便",
           "四方街、大水车、狮子山夜景"
@@ -589,6 +601,7 @@
       {
         "tag": "核心重头戏",
         "name": "玉龙雪山一日游",
+        "img": "assets/lijiang_hd/bluemoon_valley_real.jpg",
         "items": [
           "日照金山（东巴谷，约 7:30）",
           "玉龙雪山大索道（4506m ➔ 徒步栈道至 4680m）",
@@ -598,30 +611,30 @@
       }
     ],
     "timeline": [
-      { "time": "5:55", "desc": "起床洗漱", "img": "assets/lijiang_steps/step01.jpg" },
-      { "time": "6:25", "desc": "坐 101 公交（忠义市场附近上车）", "img": "assets/lijiang_steps/step02.jpg" },
-      { "time": "7:15", "desc": "进山费买票（100元），检票进山", "img": "assets/lijiang_steps/step03.jpg" },
-      { "time": "7:30", "desc": "到达东巴谷，看日照金山", "img": "assets/lijiang_steps/step04.jpg" },
-      { "time": "8:10", "desc": "到达大索道候车厅", "img": "assets/lijiang_steps/step05.jpg" },
-      { "time": "8:20", "desc": "上大索道", "img": "assets/lijiang_steps/step06.jpg" },
-      { "time": "8:30-8:35", "desc": "抵达玉龙雪山 4506m", "img": "assets/lijiang_steps/step07.jpg" },
-      { "time": "8:55", "desc": "步行木栈道到 4680m", "img": "assets/lijiang_steps/step08.jpg" },
-      { "time": "9:15", "desc": "抵达 4680m 最高点打卡", "img": "assets/lijiang_steps/step09.jpg" },
-      { "time": "10:15", "desc": "4506 候车室坐缆车下山", "img": "assets/lijiang_steps/step10.jpg" },
-      { "time": "10:28", "desc": "抵达索道出口", "img": "assets/lijiang_steps/step11.jpg" },
-      { "time": "10:28", "desc": "乘坐景区大巴前往云杉坪", "img": "assets/lijiang_steps/step12.jpg" },
-      { "time": "10:58", "desc": "抵达云杉坪乘车区", "img": "assets/lijiang_steps/step13.jpg" },
-      { "time": "11:15", "desc": "等候上云杉坪索道", "img": "assets/lijiang_steps/step14.jpg" },
-      { "time": "11:23", "desc": "抵达云杉坪", "img": "assets/lijiang_steps/step15.jpg" },
-      { "time": "11:23-13:35", "desc": "游玩云杉坪", "img": "assets/lijiang_steps/step16.jpg" },
-      { "time": "13:40", "desc": "坐索道下山", "img": "assets/lijiang_steps/step17.jpg" },
-      { "time": "13:55", "desc": "抵达云杉坪索道入口处", "img": "assets/lijiang_steps/step18.jpg" },
-      { "time": "14:15", "desc": "抵达蓝月谷", "img": "assets/lijiang_steps/step19.jpg" },
-      { "time": "14:15-16:00", "desc": "游玩蓝月谷", "img": "assets/lijiang_steps/step20.jpg" },
-      { "time": "16:25", "desc": "坐景区大巴车到三号停车场", "img": "assets/lijiang_steps/step21.jpg" },
-      { "time": "16:50", "desc": "坐 101 公交回古城", "img": "assets/lijiang_steps/step22.jpg" },
-      { "time": "17:50", "desc": "抵达丽江古城", "img": "assets/lijiang_steps/step23.jpg" },
-      { "time": "18:30", "desc": "到住处休息", "img": "assets/lijiang_steps/step24.jpg" }
+      { "time": "5:55", "desc": "起床洗漱", "img": "assets/lijiang_hd/lijiang_night.jpg" },
+      { "time": "6:25", "desc": "坐 101 公交（忠义市场附近上车）", "img": "assets/lijiang_hd/lijiang_night.jpg" },
+      { "time": "7:15", "desc": "进山费买票（100元），检票进山", "img": "assets/lijiang_hd/bluemoon_valley.jpg" },
+      { "time": "7:30", "desc": "到达东巴谷，看日照金山", "img": "assets/lijiang_hd/bluemoon_valley.jpg" },
+      { "time": "8:10", "desc": "到达大索道候车厅", "img": "assets/lijiang_hd/yulong_cablecar.jpg" },
+      { "time": "8:20", "desc": "上大索道", "img": "assets/lijiang_hd/yulong_cablecar.jpg" },
+      { "time": "8:30-8:35", "desc": "抵达玉龙雪山 4506m", "img": "assets/lijiang_hd/yulong_glacier.jpg" },
+      { "time": "8:55", "desc": "步行木栈道到 4680m", "img": "assets/lijiang_hd/yulong_glacier.jpg" },
+      { "time": "9:15", "desc": "抵达 4680m 最高点打卡", "img": "assets/lijiang_hd/yulong_glacier.jpg" },
+      { "time": "10:15", "desc": "4506 候车室坐缆车下山", "img": "assets/lijiang_hd/yulong_cablecar.jpg" },
+      { "time": "10:28", "desc": "抵达索道出口", "img": "assets/lijiang_hd/yulong_cablecar.jpg" },
+      { "time": "10:28", "desc": "乘坐景区大巴前往云杉坪", "img": "assets/lijiang_hd/yulong_forest.jpg" },
+      { "time": "10:58", "desc": "抵达云杉坪乘车区", "img": "assets/lijiang_hd/yulong_forest.jpg" },
+      { "time": "11:15", "desc": "等候上云杉坪索道", "img": "assets/lijiang_hd/yulong_cablecar.jpg" },
+      { "time": "11:23", "desc": "抵达云杉坪", "img": "assets/lijiang_hd/yulong_mountain.jpg" },
+      { "time": "11:23-13:35", "desc": "游玩云杉坪", "img": "assets/lijiang_hd/yulong_peak.jpg" },
+      { "time": "13:40", "desc": "坐索道下山", "img": "assets/lijiang_hd/yulong_cablecar.jpg" },
+      { "time": "13:55", "desc": "抵达云杉坪索道入口处", "img": "assets/lijiang_hd/yulong_forest.jpg" },
+      { "time": "14:15", "desc": "抵达蓝月谷", "img": "assets/lijiang_hd/bluemoon_valley_real.jpg" },
+      { "time": "14:15-16:00", "desc": "游玩蓝月谷", "img": "assets/lijiang_hd/bluemoon_valley_real.jpg" },
+      { "time": "16:25", "desc": "坐景区大巴车到三号停车场", "img": "assets/lijiang_hd/bluemoon_valley.jpg" },
+      { "time": "16:50", "desc": "坐 101 公交回古城", "img": "assets/lijiang_hd/lijiang_night.jpg" },
+      { "time": "17:50", "desc": "抵达丽江古城", "img": "assets/lijiang_hd/lijiang_night.jpg" },
+      { "time": "18:30", "desc": "到住处休息", "img": "assets/lijiang_hd/lijiang_night.jpg" }
     ],
     "checklist": [
       { "text": "身份证", "checked": false },
@@ -655,7 +668,7 @@
   </script>
 
   <script>
-    const STORAGE_KEY = "lijiang_guide_data_v2";
+    const STORAGE_KEY = "lijiang_guide_data_v3";
     let isEditMode = false;
     let guideData = loadData();
 
@@ -747,6 +760,7 @@
       const container = document.getElementById(containerId);
       container.innerHTML = guideData[key].map((spot, idx) => `
         <div class="spot-card">
+          ${spot.img ? `<img class="spot-cover" src="${escapeHtml(spot.img)}" alt="${escapeHtml(spot.name)}" />` : ""}
           <div class="spot-card-header">
             <span class="spot-tag" data-editable data-col="${key}" data-idx="${idx}" data-field="tag">${escapeHtml(spot.tag)}</span>
             <button class="danger-ghost edit-only" onclick="deleteSpotCard('${key}', ${idx})">删除卡片</button>
