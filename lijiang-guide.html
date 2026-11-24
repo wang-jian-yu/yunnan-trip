@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>丽江 3日游交互式攻略看板</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-soft: #eff6ff;
+      --accent: #f59e0b;
+      --note-bg: #fef9c3;
+      --note-border: #fde047;
+      --blue-note-bg: #e0f2fe;
+      --blue-note-border: #7dd3fc;
+      --danger: #ef4444;
+      --success: #10b981;
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Top Toolbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .save-status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background: var(--surface-soft);
+      border-color: #cbd5e1;
+    }
+
+    button.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    button.primary:hover {
+      background: #1d4ed8;
+    }
+
+    button.active-edit {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+
+    button.danger-ghost {
+      border: none;
+      background: transparent;
+      color: var(--danger);
+      padding: 2px 6px;
+      font-size: 0.8rem;
+    }
+
+    button.danger-ghost:hover {
+      background: #fee2e2;
+    }
+
+    /* Main Layout */
+    .container {
+      max-width: 1280px;
+      margin: 24px auto;
+      padding: 0 20px 60px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    /* Overview Banner */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .sticky-note {
+      background: var(--note-bg);
+      border: 1px solid var(--note-border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .blue-note {
+      background: var(--blue-note-bg);
+      border: 1px solid var(--blue-note-border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Editable highlight */
+    body.edit-mode [data-editable] {
+      outline: 1.5px dashed #93c5fd;
+      border-radius: 4px;
+      padding: 2px 4px;
+      background: rgba(255, 255, 255, 0.75);
+      cursor: text;
+    }
+
+    body.edit-mode [data-editable]:focus {
+      outline: 2px solid var(--primary);
+      background: #fff;
+    }
+
+    .edit-only {
+      display: none !important;
+    }
+
+    body.edit-mode .edit-only {
+      display: inline-flex !important;
+    }
+
+    /* Route Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
+    }
+
+    .spot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    .spot-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .spot-tag {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .spot-name {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .spot-list {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 0.92rem;
+      color: #334155;
+    }
+
+    .spot-list li {
+      margin-bottom: 6px;
+    }
+
+    /* Timeline */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .step-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.15s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-2px);
+      border-color: #cbd5e1;
+    }
+
+    .step-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-time {
+      background: #fef08a;
+      color: #854d0e;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .step-img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #e2e8f0;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* Bottom Two Columns: Checklist + Reference/Extensions */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .checklist-items {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .checklist-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .checklist-item.checked span {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .ref-image-wrap img {
+      max-width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    /* Modal / Lightbox */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border-radius: 16px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 85vh;
+      overflow: auto;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    textarea.json-box {
+      width: 100%;
+      height: 340px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      resize: vertical;
+    }
+
+    @media print {
+      .topbar, .edit-only, button { display: none !important; }
+      body { background: #fff; }
+      .card, .spot-card, .sticky-note, .blue-note { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>🏔️ 丽江行程攻略看板 <span class="badge">3日游 · 可扩展版</span></h1>
+      <span class="save-status" id="saveStatus">已加载默认攻略</span>
+    </div>
+    <div class="toolbar-actions">
+      <button id="toggleEditBtn" onclick="toggleEditMode()">✏️ 开启编辑模式</button>
+      <button onclick="openDataModal()">📦 导入 / 导出数据</button>
+      <button class="primary" onclick="downloadUpdatedHtml()">💾 另存为独立 HTML</button>
+      <button onclick="window.print()">🖨️ 打印 / PDF</button>
+      <button onclick="resetToDefault()">↺ 重置</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. 交通与住宿总览 -->
+    <section class="overview-grid">
+      <div class="card">
+        <div class="section-header">
+          <h2 class="section-title">🚄 交通衔接</h2>
+        </div>
+        <p style="margin:0; font-size:0.95rem;">
+          <strong data-editable data-path="transport.route">大理 (2d) ➔ 丽江 (3d)</strong>
+        </p>
+        <p style="margin:6px 0 0; color:var(--text-muted); font-size:0.9rem;" data-editable data-path="transport.detail">
+          高铁约 2h / 票价 61元
+        </p>
+      </div>
+
+      <div class="sticky-note">
+        <div class="section-header">
+          <h2 class="section-title">🏨 住宿建议便签</h2>
+        </div>
+        <p style="margin:0; font-weight:600; font-size:1rem;" data-editable data-path="accommodation.note">
+          住古城忠义市场附近，近 101 公交
+        </p>
+        <p style="margin:6px 0 0; font-size:0.85rem; color:#713f12;" data-editable data-path="accommodation.tip">
+          方便清晨 6:25 直接坐 101 路公交前往玉龙雪山，吃喝买水果也方便。
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <h2 class="section-title">💡 核心抢票与花费提醒</h2>
+        </div>
+        <ul class="spot-list" id="alertsList"></ul>
+        <button class="edit-only" style="margin-top:8px;" onclick="addAlert()">+ 添加提醒</button>
+      </div>
+    </section>
+
+    <!-- 2. 丽江核心景点卡片 -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">📍 丽江核心景点 & 古镇安排</h2>
+        <button class="edit-only primary" onclick="addSpotCard('spots')">+ 新增景点卡片</button>
+      </div>
+      <div class="cards-grid" id="spotsGrid"></div>
+    </section>
+
+    <!-- 3. 玉龙雪山一日游精确时间轴 -->
+    <section class="card">
+      <div class="section-header">
+        <h2 class="section-title">⏱️ 玉龙雪山一日游 · 精确时间轴（5:55 - 18:30 全程24步）</h2>
+        <div style="display:flex; gap:8px;">
+          <button onclick="toggleRefImage()">🖼️ 对比原图时间线</button>
+          <button class="edit-only primary" onclick="addTimelineStep()">+ 新增时间节点</button>
+        </div>
+      </div>
+
+      <div id="refImageContainer" class="ref-image-wrap" style="display:none; margin-bottom:16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+        <img src="assets/yulong_timeline_1.jpg" alt="玉龙雪山时间线（上午 5:55-10:28）" />
+        <img src="assets/yulong_timeline_2.jpg" alt="玉龙雪山时间线（午后 10:58-18:30）" />
+      </div>
+
+      <div class="timeline-grid" id="timelineGrid"></div>
+    </section>
+
+    <!-- 4. 随身物品清单 + 后续可扩展景点 -->
+    <section class="bottom-grid">
+      <div class="blue-note">
+        <div class="section-header">
+          <h2 class="section-title">🎒 出行物品核对清单</h2>
+          <span class="badge" id="checklistProgress">0 / 0</span>
+        </div>
+        <ul class="checklist-items" id="checklistUl"></ul>
+        <div class="edit-only" style="margin-top:10px; gap:6px; width:100%;">
+          <input id="newCheckInput" type="text" placeholder="新增物品..." style="flex:1; padding:6px 10px; border:1px solid #93c5fd; border-radius:6px;" />
+          <button onclick="addChecklistItem()">添加</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <h2 class="section-title">✨ 后续扩展景点 / 备选行程（随时可加）</h2>
+          <button class="edit-only primary" onclick="addSpotCard('extraSpots')">+ 添加新景点</button>
+        </div>
+        <p style="margin:0 0 14px; font-size:0.88rem; color:var(--text-muted);">
+          这里专门用来放你之后想补充的新景点（例如：泸沽湖、香格里拉、拉市海、黑龙潭公园、文海村等）。你可以开启右上角“编辑模式”自己加，也可以直接把想加的景点发给我，我帮你填好！
+        </p>
+        <div class="cards-grid" id="extraSpotsGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 导入导出弹窗 -->
+  <div class="modal-backdrop" id="dataModal">
+    <div class="modal-box">
+      <div class="section-header">
+        <h3 style="margin:0;">📦 JSON 数据导入与导出</h3>
+        <button onclick="closeDataModal()">✕ 关闭</button>
+      </div>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0;">
+        你可以复制下面的 JSON 发给 AI 帮你批量修改，也可以粘贴修改后的 JSON 点击“应用数据”。
+      </p>
+      <textarea id="jsonTextarea" class="json-box"></textarea>
+      <div style="display:flex; gap:10px; margin-top:12px; justify-content:flex-end;">
+        <button onclick="copyJson()">📋 复制 JSON</button>
+        <button class="primary" onclick="applyJsonFromModal()">✅ 应用数据</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       结构化攻略数据（AI 与用户均可直接读取/修改此 JSON）
+       ========================================================= -->
+  <script id="default-guide-data" type="application/json">
+  {
+    "transport": {
+      "route": "大理 (2d) ➔ 丽江 (3d)",
+      "detail": "高铁约 2h / 票价 61元"
+    },
+    "accommodation": {
+      "note": "住古城忠义市场附近，近 101 公交",
+      "tip": "方便清晨 6:25 直接坐 101 路公交前往玉龙雪山，吃喝买水果也方便。"
+    },
+    "alerts": [
+      "进山费：玉龙雪山 / 云杉坪 / 蓝月谷，不管去哪个进山都要收 💰100元",
+      "大索道：💰140元，公众号“丽江旅游集团”每晚 8 点准时抢票",
+      "防高反：氧气罐提前一天在美团/外卖点好（比景区便宜很多）"
+    ],
+    "spots": [
+      {
+        "tag": "古镇悠闲",
+        "name": "白沙古镇",
+        "items": [
+          "放好行李到处玩玩，节奏慢、抬头能看雪山",
+          "适合找一家咖啡馆发呆拍照"
+        ]
+      },
+      {
+        "tag": "古镇漫步",
+        "name": "束河古镇",
+        "items": [
+          "比丽江古城更安静，适合下午散步逛小店",
+          "青龙桥、四方听音广场可顺路打卡"
+        ]
+      },
+      {
+        "tag": "夜游美食",
+        "name": "丽江古城（大研古城）",
+        "items": [
+          "忠义市场附近逛吃，买水果/小吃很方便",
+          "四方街、大水车、狮子山夜景"
+        ]
+      },
+      {
+        "tag": "核心重头戏",
+        "name": "玉龙雪山一日游",
+        "items": [
+          "日照金山（东巴谷，约 7:30）",
+          "玉龙雪山大索道（4506m ➔ 徒步栈道至 4680m）",
+          "云杉坪（10:28 坐景区大巴前往）",
+          "蓝月谷（下午游览，湖水呈蒂芙尼蓝）"
+        ]
+      }
+    ],
+    "timeline": [
+      { "time": "5:55", "desc": "起床洗漱", "img": "assets/lijiang_steps/step01.jpg" },
+      { "time": "6:25", "desc": "坐 101 公交（忠义市场附近上车）", "img": "assets/lijiang_steps/step02.jpg" },
+      { "time": "7:15", "desc": "进山费买票（100元），检票进山", "img": "assets/lijiang_steps/step03.jpg" },
+      { "time": "7:30", "desc": "到达东巴谷，看日照金山", "img": "assets/lijiang_steps/step04.jpg" },
+      { "time": "8:10", "desc": "到达大索道候车厅", "img": "assets/lijiang_steps/step05.jpg" },
+      { "time": "8:20", "desc": "上大索道", "img": "assets/lijiang_steps/step06.jpg" },
+      { "time": "8:30-8:35", "desc": "抵达玉龙雪山 4506m", "img": "assets/lijiang_steps/step07.jpg" },
+      { "time": "8:55", "desc": "步行木栈道到 4680m", "img": "assets/lijiang_steps/step08.jpg" },
+      { "time": "9:15", "desc": "抵达 4680m 最高点打卡", "img": "assets/lijiang_steps/step09.jpg" },
+      { "time": "10:15", "desc": "4506 候车室坐缆车下山", "img": "assets/lijiang_steps/step10.jpg" },
+      { "time": "10:28", "desc": "抵达索道出口", "img": "assets/lijiang_steps/step11.jpg" },
+      { "time": "10:28", "desc": "乘坐景区大巴前往云杉坪", "img": "assets/lijiang_steps/step12.jpg" },
+      { "time": "10:58", "desc": "抵达云杉坪乘车区", "img": "assets/lijiang_steps/step13.jpg" },
+      { "time": "11:15", "desc": "等候上云杉坪索道", "img": "assets/lijiang_steps/step14.jpg" },
+      { "time": "11:23", "desc": "抵达云杉坪", "img": "assets/lijiang_steps/step15.jpg" },
+      { "time": "11:23-13:35", "desc": "游玩云杉坪", "img": "assets/lijiang_steps/step16.jpg" },
+      { "time": "13:40", "desc": "坐索道下山", "img": "assets/lijiang_steps/step17.jpg" },
+      { "time": "13:55", "desc": "抵达云杉坪索道入口处", "img": "assets/lijiang_steps/step18.jpg" },
+      { "time": "14:15", "desc": "抵达蓝月谷", "img": "assets/lijiang_steps/step19.jpg" },
+      { "time": "14:15-16:00", "desc": "游玩蓝月谷", "img": "assets/lijiang_steps/step20.jpg" },
+      { "time": "16:25", "desc": "坐景区大巴车到三号停车场", "img": "assets/lijiang_steps/step21.jpg" },
+      { "time": "16:50", "desc": "坐 101 公交回古城", "img": "assets/lijiang_steps/step22.jpg" },
+      { "time": "17:50", "desc": "抵达丽江古城", "img": "assets/lijiang_steps/step23.jpg" },
+      { "time": "18:30", "desc": "到住处休息", "img": "assets/lijiang_steps/step24.jpg" }
+    ],
+    "checklist": [
+      { "text": "身份证", "checked": false },
+      { "text": "少量现金（备用）", "checked": false },
+      { "text": "防晒物品（雪山紫外线强）", "checked": false },
+      { "text": "小包纸", "checked": false },
+      { "text": "一次性内裤", "checked": false },
+      { "text": "保湿物品（丽江较干燥）", "checked": false },
+      { "text": "墨镜（雪地防雪盲/拍照）", "checked": false },
+      { "text": "薄手套（最好防水）、围巾", "checked": false },
+      { "text": "保暖打底裤（薄）", "checked": false },
+      { "text": "保暖休闲鞋", "checked": false },
+      { "text": "充电宝", "checked": false },
+      { "text": "感冒药", "checked": false },
+      { "text": "保温杯", "checked": false },
+      { "text": "氧气瓶（当地出发前美团买）", "checked": false },
+      { "text": "卫生巾", "checked": false },
+      { "text": "整肠丸", "checked": false }
+    ],
+    "extraSpots": [
+      {
+        "tag": "备选扩展",
+        "name": "待添加景点示例（如：泸沽湖 / 香格里拉）",
+        "items": [
+          "开启右上角“编辑模式”可直接修改或删除此卡片",
+          "也可以随时告诉 AI 你想去的地方，帮你补充完整攻略"
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <script>
+    const STORAGE_KEY = "lijiang_guide_data_v2";
+    let isEditMode = false;
+    let guideData = loadData();
+
+    function getDefaultData() {
+      return JSON.parse(document.getElementById("default-guide-data").textContent);
+    }
+
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          updateSaveStatus("已恢复本地保存的修改");
+          return JSON.parse(saved);
+        }
+      } catch (e) {
+        console.warn("Load from localStorage failed", e);
+      }
+      return getDefaultData();
+    }
+
+    function saveData(msg = "已自动保存到本地") {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(guideData));
+        updateSaveStatus(msg + " (" + new Date().toLocaleTimeString() + ")");
+      } catch (e) {
+        updateSaveStatus("保存失败");
+      }
+    }
+
+    function updateSaveStatus(text) {
+      const el = document.getElementById("saveStatus");
+      if (el) el.textContent = text;
+    }
+
+    function renderAll() {
+      // Static data-path fields
+      document.querySelectorAll("[data-path]").forEach(el => {
+        const path = el.getAttribute("data-path").split(".");
+        let val = guideData;
+        for (const k of path) val = val?.[k];
+        if (typeof val === "string") el.textContent = val;
+      });
+
+      // Alerts
+      const alertsList = document.getElementById("alertsList");
+      alertsList.innerHTML = guideData.alerts.map((item, idx) => `
+        <li>
+          <span data-editable data-alert-idx="${idx}">${escapeHtml(item)}</span>
+          <button class="danger-ghost edit-only" onclick="deleteAlert(${idx})">删除</button>
+        </li>
+      `).join("");
+
+      // Spots & ExtraSpots
+      renderSpotCollection("spots", "spotsGrid");
+      renderSpotCollection("extraSpots", "extraSpotsGrid");
+
+      // Timeline
+      const timelineGrid = document.getElementById("timelineGrid");
+      timelineGrid.innerHTML = guideData.timeline.map((step, idx) => `
+        <div class="step-card">
+          <div class="step-top">
+            <span class="step-time" data-editable data-step-idx="${idx}" data-step-field="time">${escapeHtml(step.time)}</span>
+            <button class="danger-ghost edit-only" onclick="deleteTimelineStep(${idx})">删除</button>
+          </div>
+          ${step.img ? `<img class="step-img" src="${escapeHtml(step.img)}" alt="${escapeHtml(step.desc)}" onerror="this.style.display='none'" />` : ""}
+          <div class="step-desc" data-editable data-step-idx="${idx}" data-step-field="desc">${escapeHtml(step.desc)}</div>
+        </div>
+      `).join("");
+
+      // Checklist
+      const checklistUl = document.getElementById("checklistUl");
+      checklistUl.innerHTML = guideData.checklist.map((item, idx) => `
+        <li class="checklist-item ${item.checked ? "checked" : ""}">
+          <label class="checklist-label">
+            <input type="checkbox" ${item.checked ? "checked" : ""} onchange="toggleCheck(${idx})" />
+            <span data-editable data-check-idx="${idx}">${escapeHtml(item.text)}</span>
+          </label>
+          <button class="danger-ghost edit-only" onclick="deleteChecklistItem(${idx})">✕</button>
+        </li>
+      `).join("");
+
+      const doneCount = guideData.checklist.filter(i => i.checked).length;
+      document.getElementById("checklistProgress").textContent = `${doneCount} / ${guideData.checklist.length}`;
+
+      applyEditableState();
+    }
+
+    function renderSpotCollection(key, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = guideData[key].map((spot, idx) => `
+        <div class="spot-card">
+          <div class="spot-card-header">
+            <span class="spot-tag" data-editable data-col="${key}" data-idx="${idx}" data-field="tag">${escapeHtml(spot.tag)}</span>
+            <button class="danger-ghost edit-only" onclick="deleteSpotCard('${key}', ${idx})">删除卡片</button>
+          </div>
+          <h3 class="spot-name" data-editable data-col="${key}" data-idx="${idx}" data-field="name">${escapeHtml(spot.name)}</h3>
+          <ul class="spot-list">
+            ${spot.items.map((it, itemIdx) => `
+              <li>
+                <span data-editable data-col="${key}" data-idx="${idx}" data-item-idx="${itemIdx}">${escapeHtml(it)}</span>
+                <button class="danger-ghost edit-only" onclick="deleteSpotItem('${key}', ${idx}, ${itemIdx})">✕</button>
+              </li>
+            `).join("")}
+          </ul>
+          <button class="edit-only" style="align-self:flex-start; font-size:0.78rem; padding:4px 10px;" onclick="addSpotItem('${key}', ${idx})">+ 添加一条</button>
+        </div>
+      `).join("");
+    }
+
+    function applyEditableState() {
+      document.body.classList.toggle("edit-mode", isEditMode);
+      document.querySelectorAll("[data-editable]").forEach(el => {
+        el.contentEditable = isEditMode ? "true" : "false";
+        el.onblur = handleInlineEdit;
+      });
+    }
+
+    function handleInlineEdit(e) {
+      const el = e.target;
+      const val = el.textContent.trim();
+
+      if (el.hasAttribute("data-path")) {
+        const path = el.getAttribute("data-path").split(".");
+        let obj = guideData;
+        for (let i = 0; i < path.length - 1; i++) obj = obj[path[i]];
+        obj[path[path.length - 1]] = val;
+      } else if (el.hasAttribute("data-alert-idx")) {
+        guideData.alerts[+el.getAttribute("data-alert-idx")] = val;
+      } else if (el.hasAttribute("data-step-idx")) {
+        const idx = +el.getAttribute("data-step-idx");
+        const field = el.getAttribute("data-step-field");
+        guideData.timeline[idx][field] = val;
+      } else if (el.hasAttribute("data-check-idx")) {
+        guideData.checklist[+el.getAttribute("data-check-idx")].text = val;
+      } else if (el.hasAttribute("data-col")) {
+        const col = el.getAttribute("data-col");
+        const idx = +el.getAttribute("data-idx");
+        if (el.hasAttribute("data-item-idx")) {
+          guideData[col][idx].items[+el.getAttribute("data-item-idx")] = val;
+        } else {
+          guideData[col][idx][el.getAttribute("data-field")] = val;
+        }
+      }
+      saveData();
+    }
+
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      const btn = document.getElementById("toggleEditBtn");
+      btn.classList.toggle("active-edit", isEditMode);
+      btn.textContent = isEditMode ? "✅ 完成编辑" : "✏️ 开启编辑模式";
+      applyEditableState();
+    }
+
+    // Mutations
+    function addAlert() {
+      guideData.alerts.push("新提醒事项（点击修改）");
+      saveData(); renderAll();
+    }
+    function deleteAlert(idx) {
+      guideData.alerts.splice(idx, 1);
+      saveData(); renderAll();
+    }
+
+    function addSpotCard(col) {
+      guideData[col].push({
+        tag: "新标签",
+        name: "新景点名称",
+        items: ["点击文字可直接编辑亮点或交通方式"]
+      });
+      saveData(); renderAll();
+    }
+    function deleteSpotCard(col, idx) {
+      guideData[col].splice(idx, 1);
+      saveData(); renderAll();
+    }
+    function addSpotItem(col, idx) {
+      guideData[col][idx].items.push("新攻略条目");
+      saveData(); renderAll();
+    }
+    function deleteSpotItem(col, idx, itemIdx) {
+      guideData[col][idx].items.splice(itemIdx, 1);
+      saveData(); renderAll();
+    }
+
+    function addTimelineStep() {
+      guideData.timeline.push({ time: "12:00", desc: "新增行程节点（如：蓝月谷游玩）", img: "" });
+      saveData(); renderAll();
+    }
+    function deleteTimelineStep(idx) {
+      guideData.timeline.splice(idx, 1);
+      saveData(); renderAll();
+    }
+
+    function toggleCheck(idx) {
+      guideData.checklist[idx].checked = !guideData.checklist[idx].checked;
+      saveData(); renderAll();
+    }
+    function addChecklistItem() {
+      const input = document.getElementById("newCheckInput");
+      const text = input.value.trim();
+      if (!text) return;
+      guideData.checklist.push({ text, checked: false });
+      input.value = "";
+      saveData(); renderAll();
+    }
+    function deleteChecklistItem(idx) {
+      guideData.checklist.splice(idx, 1);
+      saveData(); renderAll();
+    }
+
+    function toggleRefImage() {
+      const wrap = document.getElementById("refImageContainer");
+      wrap.style.display = wrap.style.display === "none" ? "grid" : "none";
+    }
+
+    // Import / Export & Standalone Save
+    function openDataModal() {
+      document.getElementById("jsonTextarea").value = JSON.stringify(guideData, null, 2);
+      document.getElementById("dataModal").classList.add("open");
+    }
+    function closeDataModal() {
+      document.getElementById("dataModal").classList.remove("open");
+    }
+    function copyJson() {
+      const ta = document.getElementById("jsonTextarea");
+      ta.select();
+      document.execCommand("copy");
+      alert("已复制 JSON 数据到剪贴板！");
+    }
+    function applyJsonFromModal() {
+      try {
+        const parsed = JSON.parse(document.getElementById("jsonTextarea").value);
+        guideData = parsed;
+        saveData("已导入新数据");
+        renderAll();
+        closeDataModal();
+      } catch (e) {
+        alert("JSON 格式有误，请检查括号和逗号：\n" + e.message);
+      }
+    }
+
+    function downloadUpdatedHtml() {
+      // 将当前最新数据写回 default-guide-data 标签，生成一个可直接保存覆盖的 HTML
+      const cloneDoc = document.documentElement.cloneNode(true);
+      cloneDoc.querySelector("body").classList.remove("edit-mode");
+      const dataScript = cloneDoc.querySelector("#default-guide-data");
+      dataScript.textContent = "\n  " + JSON.stringify(guideData, null, 2).replace(/\n/g, "\n  ") + "\n  ";
+      const htmlContent = "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
+      const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "lijiang-guide.html";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function resetToDefault() {
+      if (confirm("确定要清除本地缓存的修改，恢复到当前 HTML 文件内置的默认数据吗？")) {
+        localStorage.removeItem(STORAGE_KEY);
+        guideData = getDefaultData();
+        renderAll();
+        updateSaveStatus("已恢复默认攻略");
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
