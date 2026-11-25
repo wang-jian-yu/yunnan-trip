@@ -134,14 +134,131 @@
       background: #fee2e2;
     }
 
-    /* Main Layout */
-    .container {
-      max-width: 1280px;
+    /* Two-column Page Layout with Left Master Timeline */
+    .page-layout {
+      max-width: 1460px;
       margin: 24px auto;
       padding: 0 20px 60px;
       display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .master-timeline {
+      position: sticky;
+      top: 76px;
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .mt-list {
+      position: relative;
+      margin: 12px 0 0;
+      padding-left: 18px;
+      border-left: 2px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mt-item {
+      position: relative;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .mt-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .mt-item::before {
+      content: "";
+      position: absolute;
+      left: -25px;
+      top: 14px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px #bfdbfe;
+    }
+
+    .mt-day {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 1px 8px;
+      border-radius: 999px;
+      margin-bottom: 4px;
+    }
+
+    .mt-title {
+      font-size: 0.94rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+
+    .mt-summary {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .mt-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .mt-nav a {
+      font-size: 0.78rem;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .mt-nav a:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Main Layout */
+    .container {
+      min-width: 0;
+      display: grid;
       grid-template-columns: 1fr;
       gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+      }
+      .master-timeline {
+        position: static;
+        max-height: none;
+      }
     }
 
     /* Overview Banner */
@@ -444,9 +561,26 @@
     </div>
   </header>
 
-  <main class="container">
-    <!-- 1. 交通与住宿总览 -->
-    <section class="overview-grid">
+  <div class="page-layout">
+    <!-- 左侧：5天4晚总体行程时间轴 -->
+    <aside class="master-timeline">
+      <div class="section-header" style="margin-bottom:8px;">
+        <h2 class="section-title" style="font-size:1.02rem;">🗓️ 总体行程时间轴</h2>
+        <button class="edit-only" style="padding:3px 8px; font-size:0.75rem;" onclick="addMasterTimelineItem()">+ 加一天</button>
+      </div>
+      <p style="margin:0; font-size:0.78rem; color:var(--text-muted);">点击任意一天可快速定位到右侧详细攻略</p>
+      <div class="mt-list" id="masterTimelineList"></div>
+      <div class="mt-nav">
+        <a href="#sec-overview">交通住宿</a>
+        <a href="#sec-spots">全部景点详情</a>
+        <a href="#sec-yulong">雪山时间轴</a>
+        <a href="#sec-checklist">物品清单</a>
+      </div>
+    </aside>
+
+    <main class="container">
+      <!-- 1. 交通与住宿总览 -->
+      <section class="overview-grid" id="sec-overview">
       <div class="card">
         <div class="section-header">
           <h2 class="section-title">🚄 交通衔接</h2>
@@ -480,17 +614,17 @@
       </div>
     </section>
 
-    <!-- 2. 丽江核心景点卡片 -->
-    <section>
+    <!-- 2. 全程核心景点详情（丽江 + 香格里拉平等展开） -->
+    <section id="sec-spots">
       <div class="section-header">
-        <h2 class="section-title">📍 丽江核心景点 & 古镇安排</h2>
+        <h2 class="section-title">📍 每日核心景点详情（丽江 + 香格里拉全览）</h2>
         <button class="edit-only primary" onclick="addSpotCard('spots')">+ 新增景点卡片</button>
       </div>
       <div class="cards-grid" id="spotsGrid"></div>
     </section>
 
     <!-- 3. 玉龙雪山一日游精确时间轴 -->
-    <section class="card">
+    <section class="card" id="sec-yulong">
       <div class="section-header">
         <h2 class="section-title">⏱️ 玉龙雪山一日游 · 精确时间轴（5:55 - 18:30 全程24步）</h2>
         <div style="display:flex; gap:8px;">
@@ -508,7 +642,7 @@
     </section>
 
     <!-- 4. 随身物品清单 + 后续可扩展景点 -->
-    <section class="bottom-grid">
+    <section class="bottom-grid" id="sec-checklist">
       <div class="blue-note">
         <div class="section-header">
           <h2 class="section-title">🎒 出行物品核对清单</h2>
@@ -523,16 +657,17 @@
 
       <div class="card">
         <div class="section-header">
-          <h2 class="section-title">✨ 香格里拉延伸路线 &amp; 扩展景点</h2>
+          <h2 class="section-title">✨ 备选 / 待加新景点（随时可扩展）</h2>
           <button class="edit-only primary" onclick="addSpotCard('extraSpots')">+ 添加新景点</button>
         </div>
         <p style="margin:0 0 14px; font-size:0.88rem; color:var(--text-muted);">
-          已融合小红书笔记《第一次去丽江香格里拉｜5天4晚直接照着玩》（Day 3 下午从玉龙雪山乘车约 4h 赴香格里拉，玩 Day 4–5）。开启右上角“编辑模式”可继续自由增删。
+          上面已将丽江与香格里拉 5 天行程全部平等展开；这里预留给你继续补充其他目的地（如：泸沽湖、虎跳峡、梅里雪山等）。开启“编辑模式”或直接发链接给我即可添加。
         </p>
         <div class="cards-grid" id="extraSpotsGrid"></div>
       </div>
     </section>
   </main>
+  </div>
 
   <!-- 导入导出弹窗 -->
   <div class="modal-backdrop" id="dataModal">
@@ -557,6 +692,38 @@
        ========================================================= -->
   <script id="default-guide-data" type="application/json">
   {
+    "masterTimeline": [
+      {
+        "day": "Day 1",
+        "title": "丽江古城 × 木府 × 黑龙潭",
+        "summary": "机场→古城(30min)｜上午忠义市场/滇西王子｜下午木府+狮子山｜傍晚四方街→文昌宫→黑龙潭拍雪山倒影",
+        "target": "spot-spots-0"
+      },
+      {
+        "day": "Day 2",
+        "title": "束河古镇 × 白沙古镇",
+        "summary": "古城→束河(20min)→白沙(15min)｜上午束河石板路溪流咖啡｜下午白沙壁画慢拍｜晚回古城逛吃夜景",
+        "target": "spot-spots-1"
+      },
+      {
+        "day": "Day 3",
+        "title": "玉龙雪山 ➔ 赴香格里拉",
+        "summary": "5:55起→东巴谷日照金山→4680大索道→云杉坪→蓝月谷｜16:30乘车约4h赴香格里拉住独克宗",
+        "target": "spot-spots-3"
+      },
+      {
+        "day": "Day 4",
+        "title": "普达措 × 纳帕海依拉草原",
+        "summary": "独克宗→普达措(30min)属都湖徒步｜中午回独克宗小菜咖啡/藏餐｜下午→纳帕海(20min)骑电动车环湖",
+        "target": "spot-spots-4"
+      },
+      {
+        "day": "Day 5",
+        "title": "松赞林寺 × 独克宗古城 ➔ 返程",
+        "summary": "上午龟山公园转经筒+月光广场买手信｜下午松赞林寺(15min)拉姆央措湖对岸拍金顶｜返程",
+        "target": "spot-spots-6"
+      }
+    ],
     "transport": {
       "route": "大理 (2d) ➔ 丽江 (3d) ➔ 香格里拉 (2d)",
       "detail": "大理→丽江高铁约 2h/61元；丽江市内打车+公交即可；玉龙雪山→香格里拉乘车约 4h（普达措/纳帕海建议打车或包车）"
@@ -601,13 +768,44 @@
         ]
       },
       {
-        "tag": "Day 3 上午 · 核心",
+        "tag": "Day 3 全天 · 雪山奇观",
         "name": "玉龙雪山一日游（4680 + 云杉坪 + 蓝月谷）",
         "img": "assets/lijiang_hd/bluemoon_valley_real.jpg",
         "items": [
-          "清晨：东巴谷日照金山 → 乘大索道登 4680 冰川公园 → 逛云杉坪高山草甸",
-          "中午：下山逛蓝月谷（湖水蒂芙尼蓝，预留充足拍照时间），详见下方精确时间轴",
-          "下午（若接香格里拉）：下山后乘车约 4h 前往香格里拉，住独克宗古城吃独克藏餐暖胃"
+          "交通与购票：忠义市场坐 101 公交（6:25）；进山费 100 元、大索道 140 元（“丽江旅游集团”每晚 8 点抢）",
+          "上午：7:30 东巴谷日照金山 → 8:30 乘大索道登 4506m → 徒步木栈道登顶 4680m",
+          "中午/下午：10:58 云杉坪高山草甸 → 14:15 蓝月谷（蒂芙尼蓝湖水，预留充足拍照时间）",
+          "傍晚转场：下山后乘车约 4h 赴香格里拉，住独克宗古城，吃一顿热乎独克藏餐适应海拔"
+        ]
+      },
+      {
+        "tag": "Day 4 上午 · 原始森林",
+        "name": "普达措国家公园",
+        "img": "assets/lijiang_hd/pudacuo.jpg",
+        "items": [
+          "交通与预约：从独克宗古城打车或包车约 30min（香格里拉景点分散不建议纯公交）；可现场或线上购票",
+          "核心路线：沿木栈道徒步「属都湖」，穿行原始冷杉林与高山湿地草甸，偶遇松鼠与牦牛",
+          "游玩建议：海拔约 3500m+，放慢脚步比一直吸氧更重要；备好防风外套和墨镜"
+        ]
+      },
+      {
+        "tag": "Day 4 下午 · 高原草海",
+        "name": "纳帕海依拉草原",
+        "img": "assets/lijiang_hd/napahai.jpg",
+        "items": [
+          "中午补给：先回独克宗古城「小菜咖啡」喝藏式咖啡，在「独克藏餐」吃酥油茶、藏式小炒、炸馍馍",
+          "交通与玩法：距普达措约 20min、距古城极近，免预约；强烈推荐租电动车环湖骑行（避开拉客骑马）",
+          "出片机位：湖水、经幡、牦牛群与远方雪山同框，下午顺光拍照绝美，风大注意戴帽保暖"
+        ]
+      },
+      {
+        "tag": "Day 5 全天 · 藏地圣殿",
+        "name": "松赞林寺 × 独克宗古城",
+        "img": "assets/lijiang_hd/songzanlin.jpg",
+        "items": [
+          "上午独克宗：先去「龟山公园」合力转动世界最大转经筒，逛「月光广场」与石板街集市买手信、吃藏餐午饭",
+          "下午松赞林寺：距古城仅 15min 车程，免预约（确认当日公告）；素有“小布达拉宫”之称",
+          "绝佳机位：先到寺对面「拉姆央措湖对岸」栈道拍金顶红墙倒影全景，再进寺参观后返程"
         ]
       }
     ],
@@ -657,30 +855,11 @@
     ],
     "extraSpots": [
       {
-        "tag": "Day 4 上午 · 森林湖泊",
-        "name": "普达措国家公园",
-        "img": "assets/lijiang_hd/pudacuo.jpg",
+        "tag": "后续可扩展",
+        "name": "待添加目的地（如：泸沽湖 / 虎跳峡 / 梅里雪山）",
         "items": [
-          "从独克宗古城出发约 30min（建议打车或包车），可现场或线上购票",
-          "沿栈道徒步属都湖，看原始森林与高山湖泊，注意放慢节奏防高反"
-        ]
-      },
-      {
-        "tag": "Day 4 下午 · 高原草原",
-        "name": "纳帕海依拉草原",
-        "img": "assets/lijiang_hd/napahai.jpg",
-        "items": [
-          "中午回独克宗：小菜咖啡喝藏式咖啡、独克藏餐吃酥油茶/藏式小炒/炸馍馍",
-          "下午从普达措前往纳帕海（约 20min），骑电动车环湖看牦牛、经幡与雪山同框"
-        ]
-      },
-      {
-        "tag": "Day 5 · 藏地圣殿",
-        "name": "松赞林寺 × 独克宗古城",
-        "img": "assets/lijiang_hd/songzanlin.jpg",
-        "items": [
-          "上午：龟山公园转动世界最大转经筒 → 逛独克宗古城、月光广场、吃藏餐买手信",
-          "下午：噶丹松赞林寺（约 15min 车程），俯瞰金顶红墙最佳机位在「拉姆央措湖对岸」，打卡完返程"
+          "点击右上角“开启编辑模式”可直接修改或新增卡片",
+          "也可以把新的小红书/攻略链接发给我，帮你同步加进左侧总时间轴与详情区"
         ]
       }
     ]
@@ -688,7 +867,7 @@
   </script>
 
   <script>
-    const STORAGE_KEY = "lijiang_guide_data_v4";
+    const STORAGE_KEY = "lijiang_guide_data_v5";
     let isEditMode = false;
     let guideData = loadData();
 
@@ -731,6 +910,21 @@
         for (const k of path) val = val?.[k];
         if (typeof val === "string") el.textContent = val;
       });
+
+      // Master Timeline (Left Sidebar)
+      const mtList = document.getElementById("masterTimelineList");
+      if (mtList && Array.isArray(guideData.masterTimeline)) {
+        mtList.innerHTML = guideData.masterTimeline.map((item, idx) => `
+          <div class="mt-item" onclick="jumpToTarget('${escapeHtml(item.target || "sec-spots")}')">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+              <span class="mt-day" data-editable data-mt-idx="${idx}" data-mt-field="day" onclick="event.stopPropagation()">${escapeHtml(item.day)}</span>
+              <button class="danger-ghost edit-only" onclick="event.stopPropagation(); deleteMasterTimelineItem(${idx})">✕</button>
+            </div>
+            <h3 class="mt-title" data-editable data-mt-idx="${idx}" data-mt-field="title" onclick="event.stopPropagation()">${escapeHtml(item.title)}</h3>
+            <p class="mt-summary" data-editable data-mt-idx="${idx}" data-mt-field="summary" onclick="event.stopPropagation()">${escapeHtml(item.summary)}</p>
+          </div>
+        `).join("");
+      }
 
       // Alerts
       const alertsList = document.getElementById("alertsList");
@@ -779,7 +973,7 @@
     function renderSpotCollection(key, containerId) {
       const container = document.getElementById(containerId);
       container.innerHTML = guideData[key].map((spot, idx) => `
-        <div class="spot-card">
+        <div class="spot-card" id="spot-${key}-${idx}">
           ${spot.img ? `<img class="spot-cover" src="${escapeHtml(spot.img)}" alt="${escapeHtml(spot.name)}" />` : ""}
           <div class="spot-card-header">
             <span class="spot-tag" data-editable data-col="${key}" data-idx="${idx}" data-field="tag">${escapeHtml(spot.tag)}</span>
@@ -816,6 +1010,10 @@
         let obj = guideData;
         for (let i = 0; i < path.length - 1; i++) obj = obj[path[i]];
         obj[path[path.length - 1]] = val;
+      } else if (el.hasAttribute("data-mt-idx")) {
+        const idx = +el.getAttribute("data-mt-idx");
+        const field = el.getAttribute("data-mt-field");
+        guideData.masterTimeline[idx][field] = val;
       } else if (el.hasAttribute("data-alert-idx")) {
         guideData.alerts[+el.getAttribute("data-alert-idx")] = val;
       } else if (el.hasAttribute("data-step-idx")) {
@@ -845,6 +1043,21 @@
     }
 
     // Mutations
+    function jumpToTarget(id) {
+      if (isEditMode) return;
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    function addMasterTimelineItem() {
+      guideData.masterTimeline = guideData.masterTimeline || [];
+      guideData.masterTimeline.push({ day: "Day N", title: "新行程标题", summary: "点击修改当天的总体安排与交通时长", target: "sec-spots" });
+      saveData(); renderAll();
+    }
+    function deleteMasterTimelineItem(idx) {
+      guideData.masterTimeline.splice(idx, 1);
+      saveData(); renderAll();
+    }
+
     function addAlert() {
       guideData.alerts.push("新提醒事项（点击修改）");
       saveData(); renderAll();
