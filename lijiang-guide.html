@@ -804,6 +804,33 @@
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
     }
 
+    .yulong-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      margin-top: 0;
+      transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease, margin-top 0.3s ease;
+    }
+
+    .yulong-collapse.open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      margin-top: 16px;
+    }
+
+    .yulong-collapse-inner {
+      overflow: hidden;
+    }
+
+    #toggleYulongBtn .chevron {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    #toggleYulongBtn.open .chevron {
+      transform: rotate(180deg);
+    }
+
     @media print {
       .topbar, .edit-only, button { display: none !important; }
       body { background: #fff; }
@@ -891,20 +918,22 @@
     <section class="card" id="sec-yulong">
       <div class="section-header" style="margin-bottom:0;">
         <h2 class="section-title" style="cursor:pointer;" onclick="toggleYulongTimeline()">⏱️ 玉龙雪山一日游 · 精确时间轴（5:55 - 18:30 全程24步）</h2>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button id="toggleYulongBtn" onclick="toggleYulongTimeline()">▾ 展开</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
           <button onclick="toggleRefImage()">🖼️ 对比原图时间线</button>
           <button class="edit-only primary" onclick="addTimelineStep()">+ 新增时间节点</button>
+          <button id="toggleYulongBtn" onclick="toggleYulongTimeline()"><span class="chevron">▾</span> <span class="label">展开</span></button>
         </div>
       </div>
 
-      <div id="yulongBody" style="display:none; margin-top:16px;">
-        <div id="refImageContainer" class="ref-image-wrap" style="display:none; margin-bottom:16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-          <img src="assets/yulong_timeline_1.jpg" alt="玉龙雪山时间线（上午 5:55-10:28）" onclick="openImgPreview(this.src, this.alt)" />
-          <img src="assets/yulong_timeline_2.jpg" alt="玉龙雪山时间线（午后 10:58-18:30）" onclick="openImgPreview(this.src, this.alt)" />
-        </div>
+      <div id="yulongBody" class="yulong-collapse">
+        <div class="yulong-collapse-inner">
+          <div id="refImageContainer" class="ref-image-wrap" style="display:none; margin-bottom:16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+            <img src="assets/yulong_timeline_1.jpg" alt="玉龙雪山时间线（上午 5:55-10:28）" onclick="openImgPreview(this.src, this.alt)" />
+            <img src="assets/yulong_timeline_2.jpg" alt="玉龙雪山时间线（午后 10:58-18:30）" onclick="openImgPreview(this.src, this.alt)" />
+          </div>
 
-        <div class="timeline-grid" id="timelineGrid"></div>
+          <div class="timeline-grid" id="timelineGrid"></div>
+        </div>
       </div>
     </section>
 
@@ -1771,9 +1800,11 @@
     function toggleYulongTimeline(forceOpen) {
       const body = document.getElementById("yulongBody");
       const btn = document.getElementById("toggleYulongBtn");
-      const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : body.style.display === "none";
-      body.style.display = shouldOpen ? "block" : "none";
-      btn.textContent = shouldOpen ? "▴ 收起" : "▾ 展开";
+      const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : !body.classList.contains("open");
+      body.classList.toggle("open", shouldOpen);
+      btn.classList.toggle("open", shouldOpen);
+      const label = btn.querySelector(".label");
+      if (label) label.textContent = shouldOpen ? "收起" : "展开";
     }
 
     function expandYulongTimeline() {
