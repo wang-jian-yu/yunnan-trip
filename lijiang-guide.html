@@ -148,8 +148,8 @@
     .master-timeline {
       position: sticky;
       top: 76px;
-      max-height: calc(100vh - 96px);
-      overflow-y: auto;
+      overflow: visible;
+      z-index: 60;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -160,7 +160,9 @@
     .mt-list {
       position: relative;
       margin: 12px 0 0;
-      padding-left: 18px;
+      padding: 2px 4px 2px 18px;
+      max-height: calc(100vh - 250px);
+      overflow-y: auto;
       border-left: 2px solid #cbd5e1;
       display: flex;
       flex-direction: column;
@@ -464,6 +466,7 @@
       right: auto;
       bottom: calc(100% + 10px);
       top: auto;
+      z-index: 300;
     }
 
     .mt-nav .food-tooltip::before {
