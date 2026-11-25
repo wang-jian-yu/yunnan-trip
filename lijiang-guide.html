@@ -604,7 +604,6 @@
     </div>
     <div class="toolbar-actions">
       <button id="toggleEditBtn" onclick="toggleEditMode()">✏️ 开启编辑模式</button>
-      <button onclick="openDataModal()">📦 导入 / 导出数据</button>
       <button class="primary" onclick="downloadUpdatedHtml()">💾 另存为独立 HTML</button>
       <button onclick="window.print()">🖨️ 打印 / PDF</button>
       <button onclick="resetToDefault()">↺ 重置</button>
@@ -717,24 +716,6 @@
       </div>
     </section>
   </main>
-  </div>
-
-  <!-- 导入导出弹窗 -->
-  <div class="modal-backdrop" id="dataModal">
-    <div class="modal-box">
-      <div class="section-header">
-        <h3 style="margin:0;">📦 JSON 数据导入与导出</h3>
-        <button onclick="closeDataModal()">✕ 关闭</button>
-      </div>
-      <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0;">
-        你可以复制下面的 JSON 发给 AI 帮你批量修改，也可以粘贴修改后的 JSON 点击“应用数据”。
-      </p>
-      <textarea id="jsonTextarea" class="json-box"></textarea>
-      <div style="display:flex; gap:10px; margin-top:12px; justify-content:flex-end;">
-        <button onclick="copyJson()">📋 复制 JSON</button>
-        <button class="primary" onclick="applyJsonFromModal()">✅ 应用数据</button>
-      </div>
-    </div>
   </div>
 
   <!-- 图片放大预览弹窗 -->
@@ -1128,7 +1109,6 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeImgPreview();
-        closeDataModal();
       }
     });
     function addMasterTimelineItem() {
@@ -1202,32 +1182,7 @@
       wrap.style.display = wrap.style.display === "none" ? "grid" : "none";
     }
 
-    // Import / Export & Standalone Save
-    function openDataModal() {
-      document.getElementById("jsonTextarea").value = JSON.stringify(guideData, null, 2);
-      document.getElementById("dataModal").classList.add("open");
-    }
-    function closeDataModal() {
-      document.getElementById("dataModal").classList.remove("open");
-    }
-    function copyJson() {
-      const ta = document.getElementById("jsonTextarea");
-      ta.select();
-      document.execCommand("copy");
-      alert("已复制 JSON 数据到剪贴板！");
-    }
-    function applyJsonFromModal() {
-      try {
-        const parsed = JSON.parse(document.getElementById("jsonTextarea").value);
-        guideData = parsed;
-        saveData("已导入新数据");
-        renderAll();
-        closeDataModal();
-      } catch (e) {
-        alert("JSON 格式有误，请检查括号和逗号：\n" + e.message);
-      }
-    }
-
+    // Standalone Save
     function downloadUpdatedHtml() {
       // 将当前最新数据写回 default-guide-data 标签，生成一个可直接保存覆盖的 HTML
       const cloneDoc = document.documentElement.cloneNode(true);
