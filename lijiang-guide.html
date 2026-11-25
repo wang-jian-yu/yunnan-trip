@@ -440,17 +440,20 @@
     .spot-card-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
     }
 
     .spot-tag {
       font-size: 0.75rem;
-      padding: 2px 8px;
+      padding: 3px 9px;
       border-radius: 6px;
       background: #f1f5f9;
       color: #475569;
       font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .spot-tag.has-gallery {
@@ -988,6 +991,22 @@
         "tag": "Day 1 · 12.12 周六晚",
         "name": "深圳 ✈️ 丽江（22:00 落地直奔酒店休息）",
         "img": "assets/lijiang_hd/lijiang_night.jpg",
+        "galleryTabs": [
+          {
+            "name": "丽江古城夜色",
+            "photos": [
+              { "src": "assets/lijiang_hd/lijiang_night.jpg", "caption": "丽江古城灯火夜景，落地后直接入住古城南门/忠义市场附近休息" },
+              { "src": "assets/day2_gallery/xianwen_2.jpg", "caption": "晚间古城水巷与红灯笼倒影，次日睡饱再慢慢逛" }
+            ]
+          },
+          {
+            "name": "忠义市场周边",
+            "photos": [
+              { "src": "assets/day2_gallery/zhongyi_1.jpg", "caption": "酒店步行即达忠义市场，次日睡到自然醒下楼就能逛吃" },
+              { "src": "assets/day2_gallery/zhongyi_2.jpg", "caption": "忠义市场小吃摊位区，早午餐一站式解决" }
+            ]
+          }
+        ],
         "routeSteps": [
           "① 22:00 丽江三义国际机场落地",
           "② ➔ 忠义市场附近酒店：驾车 28.6 km（约 30-40 min）",
@@ -1067,6 +1086,22 @@
         "name": "束河古镇 × 白沙古镇慢游",
         "img": "assets/lijiang_hd/shuhe_street.jpg",
         "foodIdx": 1,
+        "galleryTabs": [
+          {
+            "name": "束河古镇",
+            "photos": [
+              { "src": "assets/lijiang_hd/shuhe_street.jpg", "caption": "束河古镇标志性大牌坊，比大研古城更清净悠闲" },
+              { "src": "assets/gallery_more/shuhe_qinglong.jpg", "caption": "束河青龙桥与流水垂柳，适合上午慢逛喝咖啡" }
+            ]
+          },
+          {
+            "name": "白沙古镇",
+            "photos": [
+              { "src": "assets/gallery_more/baisha_snow_1.jpg", "caption": "白沙古镇石板街抬头直面玉龙雪山，明清老建筑原汁原味" },
+              { "src": "assets/gallery_more/baisha_snow_2.jpg", "caption": "白沙雪山二楼咖啡馆露台，喝咖啡看日落雪山绝佳机位" }
+            ]
+          }
+        ],
         "routeSteps": [
           "① 丽江古城（四方街/大水车附近出发）",
           "② ➔ 束河古镇：驾车 8.5 km（约 12-18 min）",
@@ -1082,6 +1117,34 @@
         "tag": "Day 4 · 12.15 周二",
         "name": "玉龙雪山一日游（4680 + 云杉坪 + 蓝月谷）",
         "img": "assets/lijiang_hd/bluemoon_valley_real.jpg",
+        "galleryTabs": [
+          {
+            "name": "东巴谷日照金山",
+            "photos": [
+              { "src": "assets/lijiang_hd/dongbagu_sunrise.jpg", "caption": "12 月清晨 7:40–8:00 东巴谷湖面倒映玉龙雪山日照金山" }
+            ]
+          },
+          {
+            "name": "大索道 & 4506/4680",
+            "photos": [
+              { "src": "assets/lijiang_hd/yulong_big_cablecar.jpg", "caption": "冰川公园封闭式大索道直上雪线，窗外冰川震撼" },
+              { "src": "assets/lijiang_hd/yulong_4680_boardwalk.jpg", "caption": "4506m 石碑与通往 4680m 最高点的雪山木栈道" }
+            ]
+          },
+          {
+            "name": "云杉坪",
+            "photos": [
+              { "src": "assets/lijiang_hd/yulong_mountain.jpg", "caption": "云杉坪高山草甸木栈道，背靠雪山原始云杉林" },
+              { "src": "assets/lijiang_hd/yulong_peak.jpg", "caption": "雪后的云杉坪森林与祈福牌木长廊" }
+            ]
+          },
+          {
+            "name": "蓝月谷",
+            "photos": [
+              { "src": "assets/lijiang_hd/bluemoon_valley_real.jpg", "caption": "蓝月谷蒂芙尼蓝湖水清晰倒映玉龙雪山，水月阁站下车最省力" }
+            ]
+          }
+        ],
         "routeSteps": [
           "① 丽江古城（6:00 坐 101 公交）",
           "② ➔ 玉龙雪山景区/东巴谷：驾车 35.7 km（约 50 min）",
@@ -1100,6 +1163,28 @@
         "name": "丽江 ➔ 香格里拉 · 松赞林寺 × 独克宗 × 龟山公园",
         "img": "assets/lijiang_hd/songzanlin.jpg",
         "foodIdx": 2,
+        "galleryTabs": [
+          {
+            "name": "松赞林寺",
+            "photos": [
+              { "src": "assets/gallery_more/songzanlin_lake.jpg", "caption": "拉姆央措湖对岸栈道拍松赞林寺金顶倒影，公认最佳机位" },
+              { "src": "assets/lijiang_hd/songzanlin.jpg", "caption": "有“小布达拉宫”之称的噶丹松赞林寺全景" }
+            ]
+          },
+          {
+            "name": "龟山公园大转经筒",
+            "photos": [
+              { "src": "assets/gallery_more/guishan_1.jpg", "caption": "夜幕下金光璀璨的世界最大转经筒，顺时针登顶祈福" },
+              { "src": "assets/gallery_more/guishan_2.jpg", "caption": "与各地游客合力转动大转经筒，饭后顺路看夜景跳锅庄舞" }
+            ]
+          },
+          {
+            "name": "独克宗古城",
+            "photos": [
+              { "src": "assets/lijiang_hd/dukezong.jpg", "caption": "独克宗古城经幡石板街，适合拍藏服妆造与体验非遗画唐卡" }
+            ]
+          }
+        ],
         "routeSteps": [
           "① 丽江站坐高铁赴香格里拉（约 1h20m，选 F 座看虎跳峡）",
           "② ➔ 独克宗古城附近入住 & 藏服妆造",
@@ -1117,6 +1202,28 @@
         "name": "普达措属都湖 × 纳帕海环湖 × 高山植物园",
         "img": "assets/lijiang_hd/pudacuo.jpg",
         "foodIdx": 2,
+        "galleryTabs": [
+          {
+            "name": "普达措属都湖",
+            "photos": [
+              { "src": "assets/gallery_more/pudacuo_shudu.jpg", "caption": "《司藤》取景地属都湖湿地溪流与牦牛，木栈道徒步约 1.5h" },
+              { "src": "assets/lijiang_hd/pudacuo.jpg", "caption": "普达措原始森林与高山草甸风光" }
+            ]
+          },
+          {
+            "name": "纳帕海环湖",
+            "photos": [
+              { "src": "assets/gallery_more/napahai_1.jpg", "caption": "纳帕海湖畔玛尼堆与蓝天白云倒影，建议包车顺时针环湖" },
+              { "src": "assets/gallery_more/napahai_2.jpg", "caption": "纳帕海湿地草场与成群牦牛，12 月晴天非常出片" }
+            ]
+          },
+          {
+            "name": "高山植物园",
+            "photos": [
+              { "src": "assets/gallery_more/botanical_overlook.jpg", "caption": "车直达高山植物园山顶，高处俯瞰整个纳帕海全景" }
+            ]
+          }
+        ],
         "routeSteps": [
           "① 独克宗古城出发",
           "② ➔ 普达措国家公园（属都湖）：驾车 38.8 km（约 45 min）",
@@ -1134,6 +1241,15 @@
         "name": "梅里雪山日照金山 ➔ 午后回独克宗（7天版返程）",
         "img": "assets/lijiang_hd/meili_sunrise.jpg",
         "foodIdx": 2,
+        "galleryTabs": [
+          {
+            "name": "梅里雪山日照金山",
+            "photos": [
+              { "src": "assets/lijiang_hd/meili_sunrise.jpg", "caption": "卡瓦格博峰日照金山，12 月旱季成功率全年最高" },
+              { "src": "assets/gallery_more/meili_feilai.jpg", "caption": "飞来寺白塔、经幡与金色梅里雪山同框经典机位" }
+            ]
+          }
+        ],
         "routeSteps": [
           "① 凌晨约 3:00 从独克宗古城出发（前晚请民宿老板约车）",
           "② ➔ 梅里雪山 / 飞来寺观景台：盘山公路约 165 km（单程 3.5-4 h，防暗冰）",
@@ -1235,6 +1351,20 @@
         "tag": "Day 8 · 12.19 机动返程",
         "name": "8天版从容返程日（补觉 / 丽江文海村）",
         "img": "assets/lijiang_hd/dukezong.jpg",
+        "galleryTabs": [
+          {
+            "name": "丽江文海村",
+            "photos": [
+              { "src": "assets/gallery_more/wenhai_lake.jpg", "caption": "丽江小众秘境文海村：高山湖泊草甸倒映玉龙雪山日落" }
+            ]
+          },
+          {
+            "name": "独克宗慢生活",
+            "photos": [
+              { "src": "assets/lijiang_hd/dukezong.jpg", "caption": "睡到自然醒逛逛古城买手信，从容踏上返深航班" }
+            ]
+          }
+        ],
         "items": [
           "Day 7 凌晨看梅里雪山较耗体力，8 天版把 Day 8 留作睡到自然醒 + 动车 1h20m 回丽江取寄存行李、逛文海村/忠义市场买特产后从容飞回深圳",
           "深度徒步延伸备注：若以后单独安排 4-5 天玩香格里拉，还可延伸「雨崩徒步」（尼农线进村实测约 6-8h，村内神瀑线适合新手）"
@@ -1245,7 +1375,7 @@
   </script>
 
   <script>
-    const STORAGE_KEY = "lijiang_guide_data_v19";
+    const STORAGE_KEY = "lijiang_guide_data_v20";
     let isEditMode = false;
     let guideData = loadData();
 
