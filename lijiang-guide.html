@@ -453,6 +453,102 @@
       font-weight: 600;
     }
 
+    .spot-tag.has-gallery {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .spot-tag.has-gallery:hover {
+      background: #dbeafe;
+      transform: translateY(-1px);
+    }
+
+    /* Tabbed Gallery Modal */
+    .gallery-modal-box {
+      background: var(--surface);
+      border-radius: 16px;
+      width: 94vw;
+      max-width: 900px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+    }
+
+    .gallery-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .gallery-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-soft);
+      flex-shrink: 0;
+    }
+
+    .gallery-tab-btn {
+      white-space: nowrap;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .gallery-tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
+    .gallery-body {
+      padding: 18px 20px 24px;
+      overflow-y: auto;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .gallery-photo-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gallery-photo-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      cursor: zoom-in;
+      display: block;
+    }
+
+    .gallery-photo-caption {
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
     .spot-name {
       margin: 0;
       font-size: 1.05rem;
@@ -795,6 +891,20 @@
   </main>
   </div>
 
+  <!-- 景点多Tab美图画廊弹窗 -->
+  <div class="modal-backdrop" id="galleryModal" onclick="closeGalleryModal()">
+    <div class="gallery-modal-box" onclick="event.stopPropagation()">
+      <div class="gallery-header">
+        <h3 id="galleryModalTitle" style="margin:0; font-size:1.08rem;">📸 景点美图预览</h3>
+        <button onclick="closeGalleryModal()">✕ 关闭</button>
+      </div>
+      <div class="gallery-tabs" id="galleryTabs"></div>
+      <div class="gallery-body">
+        <div class="gallery-grid" id="galleryGrid"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- 图片放大预览弹窗 -->
   <div class="modal-backdrop" id="imgModal" onclick="closeImgPreview()">
     <div class="img-modal-box" onclick="event.stopPropagation()">
@@ -894,6 +1004,50 @@
         "name": "睡到自然醒 · 丽江古城 × 木府 × 黑龙潭",
         "img": "assets/lijiang_hd/lijiang_night.jpg",
         "foodIdx": 0,
+        "galleryTabs": [
+          {
+            "name": "忠义市场",
+            "photos": [
+              { "src": "assets/day2_gallery/zhongyi_1.jpg", "caption": "忠义市场露天街巷：满街水果摊与纳西小吃，最有丽江烟火气" },
+              { "src": "assets/day2_gallery/zhongyi_2.jpg", "caption": "忠义市场户外美食摊位区，早午餐一站式吃遍当地小吃" }
+            ]
+          },
+          {
+            "name": "木府",
+            "photos": [
+              { "src": "assets/day2_gallery/mufu_1.jpg", "caption": "木府正门金字匾额与彩绘斗拱，丽江古城的“故宫”" },
+              { "src": "assets/day2_gallery/mufu_2.jpg", "caption": "登上木府高处俯瞰层层叠叠的纳西宫殿屋顶与古城全貌" }
+            ]
+          },
+          {
+            "name": "狮子山 / 万古楼",
+            "photos": [
+              { "src": "assets/day2_gallery/shizishan_1.jpg", "caption": "日落时分从狮子山观景台俯瞰丽江古城青瓦屋顶与远山" },
+              { "src": "assets/day2_gallery/shizishan_2.jpg", "caption": "蓝调时刻亮灯的万古楼，屹立在古城制高点狮子山顶" }
+            ]
+          },
+          {
+            "name": "四方街 / 现文巷",
+            "photos": [
+              { "src": "assets/day2_gallery/xianwen_1.jpg", "caption": "现文巷（油纸伞街）：傍晚亮灯后彩色油纸伞悬满青石板小巷" },
+              { "src": "assets/day2_gallery/xianwen_2.jpg", "caption": "丽江古城水巷夜景：流水、鲜花、红灯笼与木楼倒影" }
+            ]
+          },
+          {
+            "name": "文昌宫",
+            "photos": [
+              { "src": "assets/day2_gallery/wenchang_1.jpg", "caption": "文昌宫观景台：古松、石栏杆与大片古城瓦顶同框" },
+              { "src": "assets/day2_gallery/wenchang_2.jpg", "caption": "傍晚蓝调时刻在文昌宫俯瞰万家灯火的丽江古城" }
+            ]
+          },
+          {
+            "name": "黑龙潭公园",
+            "photos": [
+              { "src": "assets/day2_gallery/heilongtan_1.jpg", "caption": "黑龙潭经典机位：得月楼、锁翠桥与玉龙雪山日照金山同框" },
+              { "src": "assets/day2_gallery/heilongtan_2.jpg", "caption": "晴天澄澈水面清晰倒映雪山与古亭，绝佳出片地" }
+            ]
+          }
+        ],
         "routeSteps": [
           "① 忠义市场（早午餐）",
           "② ➔ 木府：步行约 480 m（6 min）",
@@ -1089,7 +1243,7 @@
   </script>
 
   <script>
-    const STORAGE_KEY = "lijiang_guide_data_v17";
+    const STORAGE_KEY = "lijiang_guide_data_v18";
     let isEditMode = false;
     let guideData = loadData();
 
@@ -1232,7 +1386,7 @@
         <div class="spot-card" id="spot-${key}-${idx}">
           ${spot.img ? `<img class="spot-cover" src="${escapeHtml(spot.img)}" alt="${escapeHtml(spot.name)}" onclick="openImgPreview(this.src, this.alt)" />` : ""}
           <div class="spot-card-header">
-            <span class="spot-tag" data-editable data-col="${key}" data-idx="${idx}" data-field="tag">${escapeHtml(spot.tag)}</span>
+            <span class="spot-tag ${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? "has-gallery" : ""}" data-editable data-col="${key}" data-idx="${idx}" data-field="tag" ${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? `title="点击查看本天各景点美图" onclick="openSpotGallery('${key}', ${idx})"` : ""}>${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? "📸 " : ""}${escapeHtml(spot.tag)}</span>
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
               ${renderRouteBadge(spot.routeSteps)}
               ${renderFoodBadge(spot.foodIdx)}
@@ -1316,6 +1470,38 @@
       }
     }
 
+    let activeGalleryTabs = [];
+
+    function openSpotGallery(col, idx) {
+      if (isEditMode) return;
+      const spot = guideData[col]?.[idx];
+      if (!spot || !Array.isArray(spot.galleryTabs) || !spot.galleryTabs.length) return;
+      activeGalleryTabs = spot.galleryTabs;
+      document.getElementById("galleryModalTitle").textContent = `📸 ${spot.tag} · 各景点美图`;
+      renderGalleryTab(0);
+      document.getElementById("galleryModal").classList.add("open");
+    }
+
+    function renderGalleryTab(tabIdx) {
+      const tabsEl = document.getElementById("galleryTabs");
+      tabsEl.innerHTML = activeGalleryTabs.map((t, i) => `
+        <button class="gallery-tab-btn ${i === tabIdx ? "active" : ""}" onclick="renderGalleryTab(${i})">${escapeHtml(t.name)}</button>
+      `).join("");
+
+      const tab = activeGalleryTabs[tabIdx];
+      const gridEl = document.getElementById("galleryGrid");
+      gridEl.innerHTML = (tab?.photos || []).map(p => `
+        <div class="gallery-photo-card">
+          <img src="${escapeHtml(p.src)}" alt="${escapeHtml(p.caption)}" onclick="openImgPreview(this.src, this.alt)" />
+          <div class="gallery-photo-caption">${escapeHtml(p.caption)}</div>
+        </div>
+      `).join("");
+    }
+
+    function closeGalleryModal() {
+      document.getElementById("galleryModal").classList.remove("open");
+    }
+
     function openImgPreview(src, caption) {
       document.getElementById("imgPreviewEl").src = src;
       document.getElementById("imgPreviewCaption").textContent = caption || "";
@@ -1328,7 +1514,12 @@
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        closeImgPreview();
+        const imgM = document.getElementById("imgModal");
+        if (imgM.classList.contains("open")) {
+          closeImgPreview();
+        } else {
+          closeGalleryModal();
+        }
         document.querySelectorAll(".food-pill.open").forEach(p => p.classList.remove("open"));
       }
     });
