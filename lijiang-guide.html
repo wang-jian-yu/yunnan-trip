@@ -833,7 +833,7 @@
       <div class="mt-nav">
         <a href="#sec-overview">交通住宿</a>
         <a href="#sec-spots">全部景点详情</a>
-        <a href="#sec-yulong">雪山时间轴</a>
+        <a href="#sec-yulong" onclick="expandYulongTimeline()">雪山时间轴</a>
         <a href="#sec-checklist">物品清单</a>
         <span class="food-pill" id="avoidFoodPill" tabindex="0" onclick="this.classList.toggle('open')">🚫 美食避雷</span>
       </div>
@@ -886,20 +886,23 @@
 
     <!-- 3. 玉龙雪山一日游精确时间轴 -->
     <section class="card" id="sec-yulong">
-      <div class="section-header">
-        <h2 class="section-title">⏱️ 玉龙雪山一日游 · 精确时间轴（5:55 - 18:30 全程24步）</h2>
-        <div style="display:flex; gap:8px;">
+      <div class="section-header" style="margin-bottom:0;">
+        <h2 class="section-title" style="cursor:pointer;" onclick="toggleYulongTimeline()">⏱️ 玉龙雪山一日游 · 精确时间轴（5:55 - 18:30 全程24步）</h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button id="toggleYulongBtn" onclick="toggleYulongTimeline()">▾ 展开</button>
           <button onclick="toggleRefImage()">🖼️ 对比原图时间线</button>
           <button class="edit-only primary" onclick="addTimelineStep()">+ 新增时间节点</button>
         </div>
       </div>
 
-      <div id="refImageContainer" class="ref-image-wrap" style="display:none; margin-bottom:16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-        <img src="assets/yulong_timeline_1.jpg" alt="玉龙雪山时间线（上午 5:55-10:28）" onclick="openImgPreview(this.src, this.alt)" />
-        <img src="assets/yulong_timeline_2.jpg" alt="玉龙雪山时间线（午后 10:58-18:30）" onclick="openImgPreview(this.src, this.alt)" />
-      </div>
+      <div id="yulongBody" style="display:none; margin-top:16px;">
+        <div id="refImageContainer" class="ref-image-wrap" style="display:none; margin-bottom:16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+          <img src="assets/yulong_timeline_1.jpg" alt="玉龙雪山时间线（上午 5:55-10:28）" onclick="openImgPreview(this.src, this.alt)" />
+          <img src="assets/yulong_timeline_2.jpg" alt="玉龙雪山时间线（午后 10:58-18:30）" onclick="openImgPreview(this.src, this.alt)" />
+        </div>
 
-      <div class="timeline-grid" id="timelineGrid"></div>
+        <div class="timeline-grid" id="timelineGrid"></div>
+      </div>
     </section>
 
     <!-- 4. 随身物品清单 + 后续可扩展景点 -->
@@ -1762,7 +1765,20 @@
       saveData(); renderAll();
     }
 
+    function toggleYulongTimeline(forceOpen) {
+      const body = document.getElementById("yulongBody");
+      const btn = document.getElementById("toggleYulongBtn");
+      const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : body.style.display === "none";
+      body.style.display = shouldOpen ? "block" : "none";
+      btn.textContent = shouldOpen ? "▴ 收起" : "▾ 展开";
+    }
+
+    function expandYulongTimeline() {
+      toggleYulongTimeline(true);
+    }
+
     function toggleRefImage() {
+      toggleYulongTimeline(true);
       const wrap = document.getElementById("refImageContainer");
       wrap.style.display = wrap.style.display === "none" ? "grid" : "none";
     }
