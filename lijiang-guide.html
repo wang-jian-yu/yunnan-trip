@@ -604,8 +604,6 @@
     </div>
     <div class="toolbar-actions">
       <button id="toggleEditBtn" onclick="toggleEditMode()">✏️ 开启编辑模式</button>
-      <button class="primary" onclick="downloadUpdatedHtml()">💾 另存为独立 HTML</button>
-      <button onclick="window.print()">🖨️ 打印 / PDF</button>
       <button onclick="resetToDefault()">↺ 重置</button>
     </div>
   </header>
@@ -1201,22 +1199,6 @@
     function toggleRefImage() {
       const wrap = document.getElementById("refImageContainer");
       wrap.style.display = wrap.style.display === "none" ? "grid" : "none";
-    }
-
-    // Standalone Save
-    function downloadUpdatedHtml() {
-      // 将当前最新数据写回 default-guide-data 标签，生成一个可直接保存覆盖的 HTML
-      const cloneDoc = document.documentElement.cloneNode(true);
-      cloneDoc.querySelector("body").classList.remove("edit-mode");
-      const dataScript = cloneDoc.querySelector("#default-guide-data");
-      dataScript.textContent = "\n  " + JSON.stringify(guideData, null, 2).replace(/\n/g, "\n  ") + "\n  ";
-      const htmlContent = "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
-      const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "lijiang-guide.html";
-      a.click();
-      URL.revokeObjectURL(a.href);
     }
 
     function resetToDefault() {
