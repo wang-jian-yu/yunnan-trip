@@ -348,7 +348,6 @@
       flex-direction: column;
       gap: 10px;
       position: relative;
-      overflow: hidden;
     }
 
     .spot-cover {
@@ -357,6 +356,75 @@
       height: 150px;
       object-fit: cover;
       border-bottom: 1px solid var(--border);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    /* Food Tooltip Pill */
+    .food-pill {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .food-pill:hover, .food-pill:focus-within {
+      background: #ffedd5;
+    }
+
+    .food-tooltip {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      width: 310px;
+      max-width: 82vw;
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 12px 14px;
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.28);
+      z-index: 150;
+      font-size: 0.82rem;
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    .food-tooltip h4 {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      color: #fde047;
+    }
+
+    .food-tooltip ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+
+    .food-tooltip li {
+      margin-bottom: 4px;
+    }
+
+    .food-pill:hover .food-tooltip,
+    .food-pill:focus .food-tooltip,
+    .food-pill.open .food-tooltip {
+      display: block;
+    }
+
+    .mt-nav .food-tooltip {
+      left: 0;
+      right: auto;
+      bottom: calc(100% + 8px);
+      top: auto;
     }
 
     .spot-card-header {
@@ -620,9 +688,9 @@
       <div class="mt-nav">
         <a href="#sec-overview">交通住宿</a>
         <a href="#sec-spots">全部景点详情</a>
-        <a href="#sec-food">必吃美食榜</a>
         <a href="#sec-yulong">雪山时间轴</a>
         <a href="#sec-checklist">物品清单</a>
+        <span class="food-pill" id="avoidFoodPill" tabindex="0" onclick="this.classList.toggle('open')">🚫 美食避雷</span>
       </div>
     </aside>
 
@@ -669,15 +737,6 @@
         <button class="edit-only primary" onclick="addSpotCard('spots')">+ 新增景点卡片</button>
       </div>
       <div class="cards-grid" id="spotsGrid"></div>
-    </section>
-
-    <!-- 2.5 分区必吃美食榜（小红书23篇交集） -->
-    <section id="sec-food">
-      <div class="section-header">
-        <h2 class="section-title">🍜 必吃美食 &amp; 避坑交集榜（小红书 23 篇实测汇总）</h2>
-        <button class="edit-only primary" onclick="addSpotCard('foodSpots')">+ 新增美食卡片</button>
-      </div>
-      <div class="cards-grid" id="foodSpotsGrid"></div>
     </section>
 
     <!-- 3. 玉龙雪山一日游精确时间轴 -->
@@ -819,20 +878,22 @@
         "tag": "Day 2 · 12.13 周日",
         "name": "睡到自然醒 · 丽江古城 × 木府 × 黑龙潭",
         "img": "assets/lijiang_hd/lijiang_night.jpg",
+        "foodIdx": 0,
         "items": [
-          "上午补觉+觅食：9:00–9:30 起床逛「忠义市场」（背篓/烧肉米线、鸡豆凉粉、稀豆粉粑粑卷）；正餐推荐古城外「子弟饭店」（薄荷炸排骨、牛肝菌盖饭）或「田村酸汤牦牛肉火锅」",
-          "下午木府（09:00–17:30，17:00停检）：日场门票 40 元（免预约、散客不收50元古维费），含免费官方讲解（每5-10min一波，务必跟听！）；登万卷楼/三清殿俯瞰古城，注意后山通狮子山但不卖狮子山票，品茶无强迫消费",
-          "傍晚+夜游：四方街 → 文昌宫红墙拍照 → 黑龙潭公园（约 2~3km/10min）拍玉龙雪山水中倒影，晚上回古城逛夜景买水果"
+          "上午补觉+觅食：9:00–9:30 起床逛「忠义市场」吃米线/鸡豆凉粉，正餐可去「子弟饭店」或「田村火锅」（悬停右上角看完整美食）",
+          "下午木府（09:00–17:30，17:00停检）：日场门票 40 元（免预约、散客不收50元古维费），含免费官方讲解（每5-10min一波，务必跟听！）；登万卷楼/三清殿俯瞰古城，注意后山通狮子山但不卖狮子山票",
+          "傍晚+夜游：四方街 → 文昌宫红墙拍照 → 黑龙潭公园（约 2~3km/10min）拍玉龙雪山水中倒影，晚上回古城逛夜景"
         ]
       },
       {
         "tag": "Day 3 · 12.14 周一",
         "name": "束河古镇 × 白沙古镇慢游",
         "img": "assets/lijiang_hd/shuhe_street.jpg",
+        "foodIdx": 1,
         "items": [
           "交通距离：丽江古城→束河古镇约 6~7 公里（15~20min）；束河→白沙古镇约 5 公里（15min；古城直达白沙约 10~12 公里）",
-          "上午束河：石板路 + 溪流 + 咖啡馆，打卡青龙桥、四方听音广场；美食推荐北门「汤佳米土鸡米线」/「肖蘸罐罐米线」或「燕姐野生菌汤锅」+「山山茶茶」果茶",
-          "下午白沙：明清建筑保存完好、白沙壁画、人少景美，吃「牛谭情老店」（牦牛肉小香锅、蛋包干巴菌饭）+ 二楼咖啡馆抬头拍雪山"
+          "上午束河：石板路 + 溪流 + 咖啡馆，打卡青龙桥、四方听音广场（悬停右上角「必吃美食」看束河米线/火锅推荐）",
+          "下午白沙：明清建筑保存完好、白沙壁画、人少景美，找二楼咖啡馆抬头拍雪山，晚上回丽江古城休息"
         ]
       },
       {
@@ -849,16 +910,18 @@
         "tag": "Day 5 · 12.16 周三",
         "name": "丽江 ➔ 香格里拉 · 独克宗古城",
         "img": "assets/lijiang_hd/dukezong.jpg",
+        "foodIdx": 2,
         "items": [
           "交通距离：丽江→香格里拉约 170~180km（推荐动车 1h20m/49~63元，省体力且沿途看雪山虎跳峡；若包车走虎跳峡优先走高速别走老国道）",
           "行李与入住：大件行李可寄存在丽江民宿轻装出发；住独克宗古城附近（东门/北门边缘打车直达门口，务必选带供氧+地暖的房间）",
-          "下午/晚餐：线上提前预约「龟山公园」转经筒，19:00 逛月光广场民俗打跳，吃「恩德快藏餐吧」/「藏牛佳藏式火锅」/「红火小馆」暖胃；前两天别洗头洗澡喝酒"
+          "下午/晚餐：线上提前预约「龟山公园」转经筒，19:00 逛月光广场民俗打跳（悬停右上角看独克宗必吃藏餐）；前两天别洗头洗澡喝酒"
         ]
       },
       {
         "tag": "Day 6 · 12.17 周四",
         "name": "普达措国家公园 × 纳帕海依拉草原",
         "img": "assets/lijiang_hd/pudacuo.jpg",
+        "foodIdx": 2,
         "items": [
           "上午普达措：独克宗打车/包车约 22~25km(40~50min)；12 月主要开放第二段「属都湖」木栈道(约2h，可带原味小瓜子喂松鼠)，冬季冰雪骑行多关闭",
           "下午纳帕海（距古城 8~10km）：12 月迎风骑电动车会冻透，强烈建议包车/租小车环湖！别只搜“纳帕海”也别下草场(罚款)，导航「高山植物园」「半途而沸咖啡店」「角茸骑马场往前开」「214国道观景台」",
@@ -974,7 +1037,7 @@
   </script>
 
   <script>
-    const STORAGE_KEY = "lijiang_guide_data_v14";
+    const STORAGE_KEY = "lijiang_guide_data_v15";
     let isEditMode = false;
     let guideData = loadData();
 
@@ -1042,10 +1105,16 @@
         </li>
       `).join("");
 
-      // Spots, FoodSpots & ExtraSpots
+      // Spots & ExtraSpots
       renderSpotCollection("spots", "spotsGrid");
-      renderSpotCollection("foodSpots", "foodSpotsGrid");
       renderSpotCollection("extraSpots", "extraSpotsGrid");
+
+      // Avoid Food Tooltip in Left Nav
+      const avoidPill = document.getElementById("avoidFoodPill");
+      if (avoidPill && guideData.foodSpots && guideData.foodSpots[3]) {
+        const f = guideData.foodSpots[3];
+        avoidPill.innerHTML = `🚫 美食避雷<div class="food-tooltip"><h4>${escapeHtml(f.name)}</h4><ul>${f.items.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`;
+      }
 
       // Timeline
       const timelineGrid = document.getElementById("timelineGrid");
@@ -1078,6 +1147,20 @@
       applyEditableState();
     }
 
+    function renderFoodBadge(foodIdx) {
+      if (foodIdx === undefined || foodIdx === null || !guideData.foodSpots || !guideData.foodSpots[foodIdx]) return "";
+      const f = guideData.foodSpots[foodIdx];
+      return `
+        <span class="food-pill" tabindex="0" onclick="event.stopPropagation(); this.classList.toggle('open')">
+          🍜 必吃美食
+          <div class="food-tooltip">
+            <h4>${escapeHtml(f.tag)} · ${escapeHtml(f.name)}</h4>
+            <ul>${f.items.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
+          </div>
+        </span>
+      `;
+    }
+
     function renderSpotCollection(key, containerId) {
       const container = document.getElementById(containerId);
       container.innerHTML = guideData[key].map((spot, idx) => `
@@ -1085,7 +1168,10 @@
           ${spot.img ? `<img class="spot-cover" src="${escapeHtml(spot.img)}" alt="${escapeHtml(spot.name)}" onclick="openImgPreview(this.src, this.alt)" />` : ""}
           <div class="spot-card-header">
             <span class="spot-tag" data-editable data-col="${key}" data-idx="${idx}" data-field="tag">${escapeHtml(spot.tag)}</span>
-            <button class="danger-ghost edit-only" onclick="deleteSpotCard('${key}', ${idx})">删除卡片</button>
+            <div style="display:flex; align-items:center; gap:6px;">
+              ${renderFoodBadge(spot.foodIdx)}
+              <button class="danger-ghost edit-only" onclick="deleteSpotCard('${key}', ${idx})">删除卡片</button>
+            </div>
           </div>
           <h3 class="spot-name" data-editable data-col="${key}" data-idx="${idx}" data-field="name">${escapeHtml(spot.name)}</h3>
           <ul class="spot-list">
@@ -1177,6 +1263,12 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeImgPreview();
+        document.querySelectorAll(".food-pill.open").forEach(p => p.classList.remove("open"));
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".food-pill")) {
+        document.querySelectorAll(".food-pill.open").forEach(p => p.classList.remove("open"));
       }
     });
     function addMasterTimelineItem() {
