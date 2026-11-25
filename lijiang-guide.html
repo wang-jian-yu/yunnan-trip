@@ -359,13 +359,14 @@
       border-radius: var(--radius) var(--radius) 0 0;
     }
 
-    /* Food Tooltip Pill */
+    /* Food & Route Tooltip Pill */
     .food-pill {
       position: relative;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 600;
       padding: 3px 9px;
       border-radius: 999px;
@@ -374,6 +375,22 @@
       border: 1px solid #fed7aa;
       cursor: pointer;
       user-select: none;
+    }
+
+    .food-pill.icon-only {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      font-size: 0.92rem;
+    }
+
+    .food-pill::after {
+      content: "";
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      top: 100%;
+      height: 12px;
     }
 
     .food-pill:hover, .food-pill:focus-within {
@@ -393,8 +410,8 @@
     .food-tooltip {
       display: none;
       position: absolute;
-      right: 0;
-      top: calc(100% + 8px);
+      right: -4px;
+      top: calc(100% + 10px);
       width: 310px;
       max-width: 82vw;
       background: #1e293b;
@@ -407,6 +424,18 @@
       font-weight: 400;
       line-height: 1.5;
       text-align: left;
+    }
+
+    .food-tooltip::before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      right: 12px;
+      width: 12px;
+      height: 12px;
+      background: #1e293b;
+      transform: rotate(45deg);
+      border-radius: 2px;
     }
 
     .food-tooltip h4 {
@@ -433,8 +462,15 @@
     .mt-nav .food-tooltip {
       left: 0;
       right: auto;
-      bottom: calc(100% + 8px);
+      bottom: calc(100% + 10px);
       top: auto;
+    }
+
+    .mt-nav .food-tooltip::before {
+      top: auto;
+      bottom: -6px;
+      left: 20px;
+      right: auto;
     }
 
     .spot-card-header {
@@ -1488,8 +1524,8 @@
     function renderRouteBadge(routeSteps) {
       if (!Array.isArray(routeSteps) || !routeSteps.length) return "";
       return `
-        <span class="food-pill route-pill" tabindex="0" onclick="event.stopPropagation(); this.classList.toggle('open')">
-          🗺️ 路线距离
+        <span class="food-pill route-pill icon-only" tabindex="0" aria-label="游玩顺序与距离" onclick="event.stopPropagation(); this.classList.toggle('open')">
+          🗺️
           <div class="food-tooltip">
             <h4>🗺️ 游玩顺序 &amp; 实测距离</h4>
             <ul style="list-style:none; padding-left:0;">${routeSteps.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
@@ -1502,8 +1538,8 @@
       if (foodIdx === undefined || foodIdx === null || !guideData.foodSpots || !guideData.foodSpots[foodIdx]) return "";
       const f = guideData.foodSpots[foodIdx];
       return `
-        <span class="food-pill" tabindex="0" onclick="event.stopPropagation(); this.classList.toggle('open')">
-          🍜 必吃美食
+        <span class="food-pill icon-only" tabindex="0" aria-label="必吃美食" onclick="event.stopPropagation(); this.classList.toggle('open')">
+          🍜
           <div class="food-tooltip">
             <h4>${escapeHtml(f.tag)} · ${escapeHtml(f.name)}</h4>
             <ul>${f.items.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
@@ -1518,7 +1554,7 @@
         <div class="spot-card" id="spot-${key}-${idx}">
           ${spot.img ? `<img class="spot-cover" src="${escapeHtml(spot.img)}" alt="${escapeHtml(spot.name)}" onclick="openImgPreview(this.src, this.alt)" />` : ""}
           <div class="spot-card-header">
-            <span class="spot-tag ${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? "has-gallery" : ""}" data-editable data-col="${key}" data-idx="${idx}" data-field="tag" ${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? `title="点击查看本天各景点美图" onclick="openSpotGallery('${key}', ${idx})"` : ""}>${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? "📸 " : ""}${escapeHtml(spot.tag)}</span>
+            <span class="spot-tag ${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? "has-gallery" : ""}" data-editable data-col="${key}" data-idx="${idx}" data-field="tag" ${Array.isArray(spot.galleryTabs) && spot.galleryTabs.length ? `title="点击查看本天各景点美图" onclick="openSpotGallery('${key}', ${idx})"` : ""}>${escapeHtml(spot.tag)}</span>
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
               ${renderRouteBadge(spot.routeSteps)}
               ${renderFoodBadge(spot.foodIdx)}
